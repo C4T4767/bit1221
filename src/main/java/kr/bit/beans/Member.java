@@ -1,4 +1,4 @@
-package kr.bit.Bean;
+package kr.bit.beans;
 
 import lombok.Data;
 

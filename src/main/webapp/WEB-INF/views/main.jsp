@@ -130,6 +130,19 @@
             });
         };
 
+        const handleDelete =() =>[
+            $.ajax({
+                url: 'student/delete/1',
+                type: 'delete',
+                success: function(data) {
+                    $('#myModal').modal("show");
+                    $('#modalTitle').html('삭제 성공')
+                    $('#modalContent').html('삭제에 성공했습니다')
+                    $('#okContent').html('확인')
+
+                }
+            })
+        ]
 
         const handleShowInsert = () =>{
             $('#edit').attr('hidden', true);
@@ -265,6 +278,7 @@
             <div class="container border">
                 <div class="d-flex justify-content-center align-items-center m-3">
                     <table class="table table-bordered">
+                        <input type="text" id="studentId">
                         <tr>
                             <td class="col-2">
                                 이름
@@ -301,7 +315,7 @@
                 </div>
                 <div class="d-flex justify-content-center align-items-center mb-3">
                     <button class="btn btn-primary" onclick="handleEdit()">수정</button>
-                    <button class="btn btn-warning ms-2">삭제</button>
+                    <button class="btn btn-warning ms-2" onclick="handleDelete()">삭제</button>
                 </div>
             </div>
         </div>

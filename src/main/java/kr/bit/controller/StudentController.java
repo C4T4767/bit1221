@@ -15,6 +15,10 @@ public class StudentController {
     @Autowired
     private StudentDAO studentDAO;
 
+    @Autowired
+    private StudentService studentService;
+
+
     @PostMapping("/add")
     public void add(@RequestBody Student student) {
         System.out.println(student.toString());
@@ -36,8 +40,8 @@ public class StudentController {
         studentDAO.updateStudent(student.getName(), student);
     }
 
-    @DeleteMapping("/{name}")
-    public void studentDelete(@PathVariable("name") String name) {
-        studentDAO.deleteStudent(name);
+    @DeleteMapping("/delete/{id}")
+    public void studentDelete(@PathVariable("id") int id) {
+        studentService.delete(id);
     }
 }

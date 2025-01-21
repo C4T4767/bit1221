@@ -17,8 +17,11 @@ public interface StudentMapper {
     public Student getStudentById(int id);
 
 
-    @Update("update info set name=#{name},place=#{place},school=#{school},dept=#{dept} where id=#{info_id}")
-    public void studentUpdate(Student student);
+    @Update("update info set place=#{place},school=#{school},dept=#{dept} where name_id=#{id}")
+    public void infoUpdate(Student student);
+
+    @Update("update name set name=#{name} where id=#{id}")
+    public void nameUpdate(Student student);
 
     @Delete("delete from name where id=#{id}")
     public void nameDelete(int id);

@@ -18,8 +18,12 @@ public class StudentDAO{
         return studentMapper.getStudentById(id);
     }
 
-    public void updateStudent(Student student) {
-        studentMapper.studentUpdate(student);
+    public void infoUpdate(Student student) {
+        studentMapper.infoUpdate(student);
+    }
+
+    public void nameUpdate(Student student) {
+        studentMapper.nameUpdate(student);
     }
 
     public void nameDelete(int id) {
@@ -30,16 +34,16 @@ public class StudentDAO{
         studentMapper.infoDelete(id);
     }
 
-public void save(Student student) {
-    studentMapper.saveName(student);
-    studentMapper.saveInfo(student);
-}
+    public void save(Student student) {
+        studentMapper.saveName(student);
+        studentMapper.saveInfo(student);
+    }
 
-public List<Student> findAll() {
-    return studentMapper.findAll();
-}
+    public List<Student> findAll() {
+        return studentMapper.findAll();
+    }
 
-public List<Student> findByName(String name) {
-    return studentMapper.findAllByName(name);
-}
+    public List<Student> findByName(String name) {
+        return studentMapper.findAllByName(name);
+    }
 }

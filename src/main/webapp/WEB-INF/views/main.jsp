@@ -14,7 +14,6 @@
         $(document).ready(function() {
             loadStudentAll();
         });
-
         function loadStudentAll() {
             localStorage.clear();
             $.ajax({
@@ -29,7 +28,7 @@
                             studentTableBody +=
                                 "<tr>" +
                                 "<td class='text-center'>" +
-                                "<a href='#' class='d-block fs-5 link-secondary link-underline-opacity-0' onclick='handleShow(" + student.id + ", event)'>" +
+                                "<a href='#' class='d-block fs-5 link-secondary link-underline-opacity-0' onclick='handleShow(" + student.name_id + ")'>" +
                                 student.name +
                                 "</a>" +
                                 "</td>" +
@@ -49,6 +48,10 @@
 
         const handleSearch = () =>{
             const name = $('#searchName').val();
+            if(!name){
+                loadStudentAll()
+                return
+            }
             searchByName(name);
             localStorage.setItem('name', name);
         }
@@ -62,11 +65,11 @@
                     if (data && data.length > 0) {
                         let studentTableBody = '';
                         data.forEach(student => {
-                            console.log(student.name);
+                            console.log(student);
                             studentTableBody +=
                                 "<tr>" +
                                 "<td class='text-center'>" +
-                                "<a href='#' class='d-block fs-5 link-secondary link-underline-opacity-0' onclick='handleShow(" + student.id + ", event)'>" +
+                                "<a href='#' class='d-block fs-5 link-secondary link-underline-opacity-0' onclick='handleShow(" + student.name_id + ")'>" +
                                 student.name +
                                 "</a>" +
                                 "</td>" +
@@ -114,8 +117,6 @@
                 contentType: 'application/json',  // 서버가 JSON 데이터를 받을 수 있도록 설정
                 data: JSON.stringify(newStudent),    // JSON 형식으로 데이터를 전송
                 success: function(response) {
-                    alert('학생이 추가되었습니다!');
-                    $('#insert').attr('hidden', true);
                     const name=localStorage.getItem('name');
                     if(name){
                         searchByName(name)
@@ -123,6 +124,14 @@
                     else{
                         loadStudentAll();
                     }
+                    $('#myModal').modal("show");
+                    $('#modalTitle').html('추가 성공')
+                    $('#modalContent').html('추가에 성공했습니다')
+                    $('#okContent').html('확인')
+                    $('#okContent').on('click').on('click', function() {
+                        $('#myModal').modal("hide");
+                    });
+                    $('#insert').attr('hidden', true);
                 },
                 error: function(xhr, status, error) {
                     alert('에러 발생: ' + error);
@@ -139,24 +148,35 @@
                     $('#modalTitle').html('삭제 성공')
                     $('#modalContent').html('삭제에 성공했습니다')
                     $('#okContent').html('확인')
-
+                    $('#okContent').on('click').on('click', function() {
+                        $('#myModal').modal("hide");
+                    });
                 }
             })
         ]
 
-        const handleShowInsert = () =>{
+        const handleShowInsert = (id) =>{
+
             $('#edit').attr('hidden', true);
             $('#show').attr('hidden', true);
             $('#insert').removeAttr('hidden');
-
         }
 
-        const handleShow = (name, event) =>{
+        const handleShow = (id) =>{
             $.ajax({
-                url: 'student/search/' + name,
+                url: 'student/getInfo/'+id,
+                type: 'GET',
+                success: function(data) {
+                    $('#showName').html(data.name);
+                    $('#showPlace').html(data.place);
+                    $('#showSchool').html(data.school);
+                    $('#showDept').html(data.dept);
+
+                    $('#edit').attr('hidden', true);
+                    $('#show').attr('hidden', true);
+                    $('#insert').removeAttr('hidden');
+                }
             })
-            event.preventDefault();
-            $('#show').removeAttr('hidden');
         }
 
         const handleInsertCancel = () =>{
@@ -167,10 +187,18 @@
             $('#show').removeAttr('hidden');
             $('#edit').attr('hidden', true);
         }
-        const handleEdit = () =>{
+        const handleShowUpdate = () =>{
             $('#edit').removeAttr('hidden');
             $('#show').attr('hidden', true);
         }
+
+        const handleUpdate = () => {
+            const formData = new FormData(document.getElementById('updateForm'));
+            $.ajax({
+
+            })
+        }
+
     </script>
 </head>
 <!-- Modal -->
@@ -278,7 +306,6 @@
             <div class="container border">
                 <div class="d-flex justify-content-center align-items-center m-3">
                     <table class="table table-bordered">
-                        <input type="text" id="studentId">
                         <tr>
                             <td class="col-2">
                                 이름
@@ -314,15 +341,16 @@
                     </table>
                 </div>
                 <div class="d-flex justify-content-center align-items-center mb-3">
-                    <button class="btn btn-primary" onclick="handleEdit()">수정</button>
+                    <button class="btn btn-primary" onclick="handleShowUpdate()">수정</button>
                     <button class="btn btn-warning ms-2" onclick="handleDelete()">삭제</button>
                 </div>
             </div>
         </div>
         <div class="col-7" id="edit" hidden>
             <div class="container border">
-                <form id="editForm">
+                <form id="updateForm">
                 <div class="d-flex justify-content-center align-items-center m-3">
+                    <input type="text" id="hiddenId" name="id" hidden>
                     <table class="table table-bordered">
                         <tr>
                             <td class="col-2">
@@ -359,7 +387,7 @@
                     </table>
                 </div>
                 <div class="d-flex justify-content-center align-items-center mb-3">
-                    <button type="button" class="btn btn-primary">수정</button>
+                    <button type="button" class="btn btn-primary" onclick="handleUpdate()">수정</button>
                     <button type="button" class="btn btn-secondary ms-2" onclick="handleCancel()">취소</button>
                 </div>
                 </form>

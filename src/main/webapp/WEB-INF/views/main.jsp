@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<c:set var="root" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,11 +7,83 @@
     <title>TITLE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
     <script>
+        $(document).ready(function() {
+            loadStudentAll();
+        });
+
+        function loadStudentAll() {
+            $.ajax({
+                url: 'student/all',
+                type: 'GET',
+                success: function(data) {
+                    console.log(data);  // 서버에서 받은 학생 목록을 콘솔에 출력
+                    if (data && data.length > 0) {
+                        let studentTableBody = '';
+                        data.forEach(student => {
+                            console.log(student.name);
+                            studentTableBody +=
+                                "<tr>" +
+                                "<td class='text-center'>" +
+                                "<a href='#' class='d-block fs-5 link-secondary link-underline-opacity-0' onclick='handleShow(" + student.id + ", event)'>" +
+                                student.name +
+                                "</a>" +
+                                "</td>" +
+                                "</tr>";
+                        });
+                        $("#studentList").html(studentTableBody);
+                    } else {
+                        $("#studentList").html("<tr><td colspan='1' class='text-center'>학생이 없습니다.</td></tr>");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('에러 발생:', error);
+                    alert('학생 목록을 가져오는 데 실패했습니다.');
+                }
+            });
+        }
+
         const handleSearch = () =>{
+            const name = $('#searchName').val();
+            if(!name){
+                loadStudentAll();
+                return;
+            }
+            $.ajax({
+                url: 'student/search/'+name,
+                type: 'GET',
+                success: function(data) {
+                    console.log(data);  // 서버에서 받은 학생 목록을 콘솔에 출력
+                    if (data && data.length > 0) {
+                        let studentTableBody = '';
+                        data.forEach(student => {
+                            console.log(student.name);
+                            studentTableBody +=
+                                "<tr>" +
+                                "<td class='text-center'>" +
+                                "<a href='#' class='d-block fs-5 link-secondary link-underline-opacity-0' onclick='handleShow(" + student.id + ", event)'>" +
+                                student.name +
+                                "</a>" +
+                                "</td>" +
+                                "</tr>";
+                        });
+                        $("#studentList").html(studentTableBody);
+                    } else {
+                        $("#studentList").html("<tr><td colspan='1' class='text-center'>학생이 없습니다.</td></tr>");
+                        ifNoStudent();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('에러 발생:', error);
+                    alert('학생 목록을 가져오는 데 실패했습니다.');
+                }
+            });
+        }
+
+        const ifNoStudent = () => {
             $('#myModal').modal("show");
             $('#modalTitle').html('학생 없음')
             $('#modalContent').html('해당하는 학생이 없습니다. 추가하시겠습니까?')
@@ -26,15 +99,21 @@
 
         const handleInsert = () => {
             const formData = new FormData(document.getElementById('insertForm'));
+            const newStudent = {
+                name: formData.get('name'),
+                place: formData.get('place'),
+                school: formData.get('school'),
+                dept: formData.get('dept'),
+            }
+            console.log(formData.get('name'));
             $.ajax({
-                url: '/your-server-endpoint',  // 실제 서버 주소로 변경 필요
+                url: 'student/add',
                 type: 'POST',
-                data: formData,
-                processData: false,  // 파일 업로드 시 필요
-                contentType: false,  // 파일 업로드 시 필요
+                contentType: 'application/json',  // 서버가 JSON 데이터를 받을 수 있도록 설정
+                data: JSON.stringify(newStudent),    // JSON 형식으로 데이터를 전송
                 success: function(response) {
-                    alert('추가되었습니다!');
-                    $('#insert').attr('hidden', true);  // 추가 폼 숨기기
+                    alert('학생이 추가되었습니다!');
+                    $('#insert').attr('hidden', true);
                 },
                 error: function(xhr, status, error) {
                     alert('에러 발생: ' + error);
@@ -50,7 +129,10 @@
 
         }
 
-        const handleShow = (idx, event) =>{
+        const handleShow = (name, event) =>{
+            $.ajax({
+                url: 'student/search/' + name,
+            })
             event.preventDefault();
             $('#show').removeAttr('hidden');
         }
@@ -105,20 +187,15 @@
 
             <div class="container border p-0" style="height:80vh; display: flex; flex-direction: column; justify-content: space-between;">
                 <table class="table table-primary table-bordered">
+                    <tbody id="studentList">
                     <tr>
                         <td class="text-center">
-                            <a href="/" class="d-block fs-5 link-secondary link-underline-opacity-0" onclick="handleShow(1, event)">
-                                이름1
+                            <a href="/" class="d-block fs-5 link-secondary link-underline-opacity-0" onclick="handleShow(0, event)">
+                                이름
                             </a>
                         </td>
                     </tr>
-                    <tr>
-                        <td class="text-center">
-                            <a href="/" class="d-block">
-                                이름2
-                            </a>
-                        </td>
-                    </tr>
+                    </tbody>
                 </table>
 
                 <div class="m-2" style="align-self: flex-end;">
@@ -161,7 +238,7 @@
                                     전공
                                 </td>
                                 <td>
-                                    <input type="text" name="dept3" class="form-control">
+                                    <input type="text" name="dept" class="form-control">
                                 </td>
                             </tr>
                         </table>

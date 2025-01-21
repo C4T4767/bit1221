@@ -1,5 +1,6 @@
 package kr.bit.dao;
 
+import java.util.List;
 import kr.bit.beans.Student;
 import kr.bit.mapper.StudentMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -48,5 +49,18 @@ public class StudentDAO{
             log.error("Error: " + name, e);
             return false;
         }
+    }
+}
+    public void save(Student student) {
+        studentMapper.saveName(student);
+        studentMapper.saveInfo(student);
+    }
+
+    public List<Student> findAll() {
+        return studentMapper.findAll();
+    }
+
+    public List<Student> findByName(String name) {
+        return studentMapper.findAllByName(name);
     }
 }

@@ -3,13 +3,11 @@ package kr.bit.dao;
 import java.util.List;
 import kr.bit.beans.Student;
 import kr.bit.mapper.StudentMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
-@Service
+@Repository
 @Transactional
 public class StudentDAO{
 

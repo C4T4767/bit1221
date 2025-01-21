@@ -36,31 +36,24 @@ public class StudentDAO{
         return studentMapper.getStudentByName(student.getName());
     }
 
-    public boolean deleteStudent(String name) {
-        try {
-            Student student = studentMapper.getStudentByName(name);
-            if (student == null) {
-                return false;
-            }
-
-            studentMapper.studentDelete(name);
-            return true;
-        } catch (Exception e) {
-            log.error("Error: " + name, e);
-            return false;
-        }
+    public void nameDelete(int id) {
+        studentMapper.nameDelete(id);
     }
+
+    public void infoDelete(int id) {
+        studentMapper.infoDelete(id);
+    }
+
+public void save(Student student) {
+    studentMapper.saveName(student);
+    studentMapper.saveInfo(student);
 }
-    public void save(Student student) {
-        studentMapper.saveName(student);
-        studentMapper.saveInfo(student);
-    }
 
-    public List<Student> findAll() {
-        return studentMapper.findAll();
-    }
+public List<Student> findAll() {
+    return studentMapper.findAll();
+}
 
-    public List<Student> findByName(String name) {
-        return studentMapper.findAllByName(name);
-    }
+public List<Student> findByName(String name) {
+    return studentMapper.findAllByName(name);
+}
 }

@@ -18,9 +18,9 @@ public interface StudentMapper {
     @Insert("INSERT INTO info(name_id, place, school, dept) VALUES(#{name_id}, #{place}, #{school}, #{dept})")
     void saveInfo(Student student);
 
-    @Select("SELECT n.id AS name_id, n.name, i.id AS info_id, i.place, i.school, i.dept FROM name n LEFT OUTER JOIN info i ON n.id = i.name_id")
+    @Select("SELECT n.id AS name_id, n.name, i.id AS info_id, i.place, i.school, i.dept FROM name n LEFT OUTER JOIN info i ON n.id = i.name_id ORDER BY name")
     List<Student> findAll();
 
-    @Select("SELECT n.id AS name_id, n.name, i.id AS info_id, i.place, i.school, i.dept FROM name n LEFT OUTER JOIN info i ON n.id = i.name_id WHERE n.name LIKE '%${name}%'")
+    @Select("SELECT n.id AS name_id, n.name, i.id AS info_id, i.place, i.school, i.dept FROM name n LEFT OUTER JOIN info i ON n.id = i.name_id WHERE n.name LIKE '%${name}%' ORDER BY name")
     List<Student> findAllByName(@Param("name") String name);
 }

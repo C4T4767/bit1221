@@ -16,6 +16,7 @@
         });
 
         function loadStudentAll() {
+            localStorage.clear();
             $.ajax({
                 url: 'student/all',
                 type: 'GET',
@@ -48,10 +49,11 @@
 
         const handleSearch = () =>{
             const name = $('#searchName').val();
-            if(!name){
-                loadStudentAll();
-                return;
-            }
+            searchByName(name);
+            localStorage.setItem('name', name);
+        }
+
+        const searchByName = name => {
             $.ajax({
                 url: 'student/search/'+name,
                 type: 'GET',
@@ -114,6 +116,13 @@
                 success: function(response) {
                     alert('학생이 추가되었습니다!');
                     $('#insert').attr('hidden', true);
+                    const name=localStorage.getItem('name');
+                    if(name){
+                        searchByName(name)
+                    }
+                    else{
+                        loadStudentAll();
+                    }
                 },
                 error: function(xhr, status, error) {
                     alert('에러 발생: ' + error);
@@ -186,6 +195,7 @@
             </div>
 
             <div class="container border p-0" style="height:80vh; display: flex; flex-direction: column; justify-content: space-between;">
+                <div style="max-height: 110%; overflow-y: auto;">
                 <table class="table table-primary table-bordered">
                     <tbody id="studentList">
                     <tr>
@@ -197,7 +207,7 @@
                     </tr>
                     </tbody>
                 </table>
-
+                </div>
                 <div class="m-2" style="align-self: flex-end;">
                     <button class="btn btn-primary" onclick="handleShowInsert()">추가</button>
                 </div>

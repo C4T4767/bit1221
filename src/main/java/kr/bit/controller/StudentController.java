@@ -18,6 +18,10 @@ public class StudentController {
     @Autowired
     private StudentService studentService;
 
+    @GetMapping("/{id}")
+    public Student getStudent(@PathVariable("id") int id) {
+        return studentDAO.getStudent(id);
+    }
 
     @PostMapping("/add")
     public void add(@RequestBody Student student) {
@@ -37,7 +41,7 @@ public class StudentController {
 
     @PutMapping("/update")
     public void studentUpdate(@RequestBody Student student) {
-        studentDAO.updateStudent(student.getName(), student);
+        studentDAO.updateStudent(student);
     }
 
     @DeleteMapping("/delete/{id}")

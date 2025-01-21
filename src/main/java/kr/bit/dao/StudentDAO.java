@@ -3,37 +3,23 @@ package kr.bit.dao;
 import java.util.List;
 import kr.bit.beans.Student;
 import kr.bit.mapper.StudentMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j
-@Service
+@Repository
 @Transactional
 public class StudentDAO{
 
     @Autowired
     private StudentMapper studentMapper;
 
-    public Student getStudentByName(String name) {
-        return studentMapper.getStudentByName(name);
+    public Student getStudent(int id) {
+        return studentMapper.getStudentById(id);
     }
 
-    public Student updateStudent(String name, Student student) {
-        Student existingStudent = studentMapper.getStudentByName(name);
-        if (existingStudent == null) {
-            return null;
-        }
-
-        student.setName_id(existingStudent.getName_id());
-        student.setInfo_id(existingStudent.getInfo_id());
-
-
+    public void updateStudent(Student student) {
         studentMapper.studentUpdate(student);
-
-
-        return studentMapper.getStudentByName(student.getName());
     }
 
     public void nameDelete(int id) {

@@ -1,5 +1,6 @@
 package kr.bit.mapper;
 
+import kr.bit.beans.Student;
 import java.util.List;
 import kr.bit.beans.Student;
 import org.apache.ibatis.annotations.Insert;
@@ -8,9 +9,16 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+
 @Mapper
 public interface StudentMapper {
 
+    public Student getStudentByName(String name);
+
+    public void studentUpdate(Student student);
+
+    public void studentDelete(String name);
+}
     @Insert("INSERT INTO name(name) VALUES(#{name})")
     @Options(useGeneratedKeys = true, keyProperty = "name_id")
     void saveName(Student student);

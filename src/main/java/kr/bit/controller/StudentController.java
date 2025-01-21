@@ -1,5 +1,7 @@
 package kr.bit.controller;
 
+import kr.bit.beans.Student;
+import kr.bit.dao.StudentDAO;
 import java.util.List;
 import kr.bit.beans.Student;
 import kr.bit.service.StudentService;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
 
     @Autowired
-    private StudentService studentService;
+    private StudentDAO studentDAO;
 
     @PostMapping("/add")
     public void add(@RequestBody Student student) {
@@ -29,4 +31,13 @@ public class StudentController {
         return studentService.search(name);
     }
 
+    @PutMapping("/update")
+    public void studentUpdate(@RequestBody Student student) {
+        studentDAO.updateStudent(student.getName(), student);
+    }
+
+    @DeleteMapping("/{name}")
+    public void studentDelete(@PathVariable("name") String name) {
+        studentDAO.deleteStudent(name);
+    }
 }

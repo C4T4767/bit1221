@@ -12,15 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/student")
 public class StudentController {
 
-    @Autowired
-    private StudentDAO studentDAO;
 
     @Autowired
     private StudentService studentService;
 
     @GetMapping("/{id}")
     public Student getStudent(@PathVariable("id") int id) {
-        return studentDAO.getStudent(id);
+        return studentService.getStudent(id);
     }
 
     @PostMapping("/add")
@@ -41,7 +39,7 @@ public class StudentController {
 
     @PutMapping("/update")
     public void studentUpdate(@RequestBody Student student) {
-        studentDAO.updateStudent(student);
+        studentService.studentUpdate(student);
     }
 
     @DeleteMapping("/delete/{id}")

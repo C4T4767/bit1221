@@ -33,4 +33,9 @@ public class StudentService {
         studentDAO.nameDelete(id);
     }
 
+    public void studentUpdate(Student student) {
+        studentDAO.infoUpdate(student);
+        studentDAO.nameUpdate(student);
+    }
+
 }

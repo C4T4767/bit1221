@@ -4,13 +4,20 @@ import kr.bit.beans.Student;
 import java.util.List;
 import kr.bit.beans.Student;
 import org.apache.ibatis.annotations.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Mapper
 public interface StudentMapper {
 
-    public Student getStudentByName(String name);
+    @Select("select i.id as info_id, name_id, name,place,school,dept " +
+             "from info i " +
+            "join name n on n.id = i.name_id " +
+            "where n.id=#{id} ")
+    public Student getStudentById(int id);
 
+
+    @Update("update info set name=#{name},place=#{place},school=#{school},dept=#{dept} where id=#{info_id}")
     public void studentUpdate(Student student);
 
     @Delete("delete from name where id=#{id}")

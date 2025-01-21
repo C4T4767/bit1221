@@ -12,6 +12,10 @@ public class StudentService {
     @Autowired
     private StudentDAO studentDAO;
 
+    public Student getStudent(int id) {
+        return studentDAO.getStudent(id);
+    }
+
     public void add(Student student) {
         studentDAO.save(student);
     }
